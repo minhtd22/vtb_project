@@ -1,6 +1,5 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-plusplus */
-/* eslint-disable consistent-return */
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
 const db = require('../models');
@@ -20,6 +19,7 @@ const verifyToken = (req, res, next) => {
     next();
   });
 };
+
 const isAdmin = (req, res, next) => {
   User.findById(req.userId).exec((err, user) => {
     if (err) {
