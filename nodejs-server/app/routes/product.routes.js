@@ -10,6 +10,7 @@ module.exports = (app) => {
   router.get('/', [authJwt.verifyToken], products.findAll);
   router.get('/:id', [authJwt.verifyToken], products.findOne);
   router.put('/:id', [authJwt.verifyToken], products.update);
+  router.delete('/:id', [authJwt.verifyToken], products.delete);
 
   app.use('/api/products', router);
 };

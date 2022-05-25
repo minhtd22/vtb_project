@@ -28,7 +28,7 @@ exports.create = (req, res) => {
         select: '_id username email roles',
         populate: {
           path: 'roles',
-        }
+        },
       });
 
       res.send(result);
@@ -45,13 +45,13 @@ exports.findAll = (req, res) => {
   const getCurrentUser = getUserInfor(req, res);
   const userId = getCurrentUser.id;
 
-  Product.find({ user: userId }).then(async data => {
+  Product.find({ user: userId }).then(async (data) => {
     try {
-      res.send({ status: 200, data });        
+      res.send({ status: 200, data });
     } catch (err) {
-        res.status(500).send({ status: 500, message: err.message });
+      res.status(500).send({ status: 500, message: err.message });
     }
-  })
+  });
 };
 
 // Find a single Product with an id
@@ -59,54 +59,76 @@ exports.findOne = (req, res) => {
   // const getCurrentUser = getUserInfor(req, res);
   // const userId = getCurrentUser.id;
 
-  const id = req.params.id;
+  const { id } = req.params;
   Product.findById(id)
-    .then(data => {
-      if (!data)
-        res.status(404).send({ message: "Not found Product with id " + id });
-      else res.send(data);
+    .then((data) => {
+      if (!data) { res.status(404).send({ message: `Not found Product with id ${id}` }); } else res.send(data);
     })
-    .catch(err => {
+    .catch(() => {
       res
         .status(500)
-        .send({ message: "Error retrieving Product with id=" + id });
+        .send({ message: `Error retrieving Product with id=${id}` });
     });
 };
 
 // Update a Product by the id in the request
 exports.update = (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
 
   if (!req.body) {
     return res.status(400).send({
-      message: "Data to update can not be empty!"
+      message: 'Data to update can not be empty!',
     });
   }
 
   Product.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
-    .then(data => {
+    .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot update Product with id=${id}. Maybe Product was not found!`
+          message: `Cannot update Product with id=${id}. Maybe Product was not found!`,
         });
       } else res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
         message: err.message,
       });
     });
 };
 
-// // Delete a Product with the specified id in the request
-// exports.delete = (req, res) => {
+// Delete a Product with the specified id in the request
+exports.delete = async (req, res) => {
+  const { id } = req.params;
+  const getCurrentUser = getUserInfor(req, res);
+  const userId = getCurrentUser.id;
 
-// };
-// // Delete all Products from the database.
-// exports.deleteAll = (req, res) => {
+  const product = await Product.findById(id).orFail(() => {
+    res.status(404).send({ message: 'Product not found' });
+  });
 
-// };
-// // Find all published Tutorials
-// exports.findAllPublished = (req, res) => {
-
-// };
+  // Validate if product does not belongs to user
+  if (product.user.toString() !== userId) {
+    res.status(403).send({
+      message: 'Access Denied',
+    });
+  } else {
+    // Delete product
+    Product.findByIdAndRemove(id)
+      .then((data) => {
+        if (!data) {
+          res.status(404).send({
+            message: `Cannot delete Product with id=${id}. Maybe Product was not found!`,
+          });
+        } else {
+          res.send({
+            message: 'Product was deleted successfully!',
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message,
+        });
+      });
+  }
+};

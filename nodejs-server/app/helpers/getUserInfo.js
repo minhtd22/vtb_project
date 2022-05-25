@@ -9,8 +9,6 @@ const getUserInfo = (req, res) => {
 
   try {
     const currentUser = jwt.decode(token, config.secret);
-
-    console.log('currentUser', currentUser);
     return currentUser;
   } catch (ex) {
     res.status(400).send('Invalid JWT.');

@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
 /* eslint-disable no-shadow */
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -87,7 +86,7 @@ exports.signin = (req, res) => {
         });
       }
       const token = jwt.sign(
-        { 
+        {
           id: user.id,
           username: user.username,
           email: user.email,
@@ -96,7 +95,7 @@ exports.signin = (req, res) => {
         config.secret,
         {
           expiresIn: 86400, // 24 hours
-        }
+        },
       );
       const authorities = [];
       for (let i = 0; i < user.roles.length; i++) {

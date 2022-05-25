@@ -18,6 +18,7 @@ module.exports = {
     'react',
   ],
   rules: {
-    treatUndefinedAsUnspecified: false,
+    // treatUndefinedAsUnspecified: false,
+    'consistent-return': 'off',
   },
 };
