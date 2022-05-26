@@ -9,18 +9,26 @@ const getPagination = (page, size = 5) => {
   const offset = page ? page * limit : 0;
   return { limit, offset };
 };
+const validateAdminRole = (roles) => _.some(roles, { name: 'admin' });
 
 // Get all users
 exports.findAll = (req, res) => {
   const getCurrentUser = getUserInfor(req, res);
   const userRoles = getCurrentUser.roles;
-  const isUserAdmin = _.some(userRoles, { name: 'admin' });
-  const { page, size } = req.query;
+  const isUserAdmin = validateAdminRole(userRoles);
+  const { page, size, username } = req.query;
 
   const { limit, offset } = getPagination(page, size);
-  const query = {};
+  let query = {};
 
   if (isUserAdmin) {
+    if (username) {
+      query = {
+        ...query,
+        username: { $regex: new RegExp(username), $options: 'i' },
+      };
+    }
+
     User.paginate(query, { offset, limit })
       .then((data) => {
         res.send({
@@ -66,7 +74,7 @@ exports.update = (req, res) => {
   const { id } = req.params;
   const getCurrentUser = getUserInfor(req, res);
   const userRoles = getCurrentUser.roles;
-  const isUserAdmin = _.some(userRoles, { name: 'admin' });
+  const isUserAdmin = validateAdminRole(userRoles);
   const userId = getCurrentUser.id;
 
   if (_.isEmpty(req.body)) {
@@ -76,7 +84,7 @@ exports.update = (req, res) => {
   }
 
   if (isUserAdmin || userId === id) {
-    User.findByIdAndUpdate(id, req.body, { new: true })
+    User.findByIdAndUpdate(id, req.body, { new: true, runValidators: true })
       .then((data) => {
         if (!data) {
           res.status(404).send({

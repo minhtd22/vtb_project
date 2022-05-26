@@ -1,7 +1,14 @@
+const _ = require('lodash');
 const db = require('../models');
 const getUserInfor = require('../helpers/getUserInfo');
 
 const Product = db.product;
+const getPagination = (page, size = 5) => {
+  const limit = size ? +size : 5;
+  const offset = page ? page * limit : 0;
+  return { limit, offset };
+};
+const validateAdminRole = (roles) => _.some(roles, { name: 'admin' });
 
 // Create and Save a new Product
 exports.create = (req, res) => {
@@ -16,6 +23,10 @@ exports.create = (req, res) => {
   const product = new Product({
     productName: req.body.productName,
     customerType: req.body.customerType,
+    customerInformation: req.body.customerInformation,
+    customerName: req.body.customerName,
+    dayAction: req.body.dayAction,
+    cif: req.body.cif,
     user: getCurrentUser.id,
   });
 
@@ -44,14 +55,47 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
   const getCurrentUser = getUserInfor(req, res);
   const userId = getCurrentUser.id;
+  const userRoles = getCurrentUser.roles;
+  const isUserAdmin = validateAdminRole(userRoles);
+  const {
+    page, size, cif, customerName,
+  } = req.query;
+  const { limit, offset } = getPagination(page, size);
+  let query = {};
 
-  Product.find({ user: userId }).then(async (data) => {
-    try {
-      res.send({ status: 200, data });
-    } catch (err) {
+  if (!isUserAdmin) {
+    query = {
+      ...query,
+      user: userId,
+    };
+  }
+
+  if (cif) {
+    query = {
+      ...query,
+      cif,
+    };
+  }
+
+  if (customerName) {
+    query = {
+      ...query,
+      customerName: { $regex: new RegExp(customerName), $options: 'i' },
+    };
+  }
+
+  Product.paginate(query, { offset, limit })
+    .then((data) => {
+      res.send({
+        totalItems: data.totalDocs,
+        products: data.docs,
+        totalPages: data.totalPages,
+        currentPage: data.page - 1,
+      });
+    })
+    .catch((err) => {
       res.status(500).send({ status: 500, message: err.message });
-    }
-  });
+    });
 };
 
 // Find a single Product with an id
@@ -62,7 +106,9 @@ exports.findOne = (req, res) => {
   const { id } = req.params;
   Product.findById(id)
     .then((data) => {
-      if (!data) { res.status(404).send({ message: `Not found Product with id ${id}` }); } else res.send(data);
+      if (!data) {
+        res.status(404).send({ message: `Not found Product with id ${id}` });
+      } else res.send(data);
     })
     .catch(() => {
       res

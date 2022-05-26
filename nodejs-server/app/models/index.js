@@ -9,7 +9,7 @@ db.mongoose = mongoose;
 db.url = dbConfig.url;
 db.user = require('./user.model')(mongoose, mongoosePaginate);
 db.role = require('./role.model');
-db.product = require('./product.model');
+db.product = require('./product.model')(mongoose, mongoosePaginate);
 
 db.ROLES = ['user', 'admin', 'moderator'];
 

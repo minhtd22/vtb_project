@@ -1,3 +1,5 @@
+const department = ['DVKH', 'Bán lẻ', 'KHDN', 'PGD Ông Ích Khiêm', 'PGD Tây Hồ', 'PGD Nam ĐN'];
+
 module.exports = (mongoose, mongoosePaginate) => {
   const userSchema = new mongoose.Schema(
     {
@@ -6,6 +8,11 @@ module.exports = (mongoose, mongoosePaginate) => {
         required: true,
         trim: true,
         unique: true,
+      },
+      fullName: {
+        type: String,
+        required: true,
+        trim: true,
       },
       email: {
         type: String,
@@ -17,6 +24,14 @@ module.exports = (mongoose, mongoosePaginate) => {
         type: String,
         required: true,
         minLength: 8,
+      },
+      code: {
+        type: String,
+      },
+      department: {
+        type: String,
+        enum: department,
+        required: true,
       },
       roles: [
         {
