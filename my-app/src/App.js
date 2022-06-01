@@ -1,38 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 import Login from './components/Login';
 import SignUp from './components/SignUp';
-import logo from './logo.svg';
 import './App.css';
-import UserService from './services/user.service';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
-import myImage from './assets/images/logo.png';
+import myImage from './assets/images/logo.jpg';
+import AuthService from './services/auth.service';
+import Home from './components/Home';
 
-// function App() {
-//   const [data, setData] = React.useState(null);
-//   useEffect(() => {
-//     UserService.getPublicContent()
-//       .then((res) => {console.log('res', res); setData(res.data)})
-//   }, []);
-
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>{!data ? "Loading..." : data}</p>
-//       </header>
-//     </div>
-//   );
-// }
 function App() {
+  const [showAdminBoard, setShowAdminBoard] = useState(false);
+  const [currentUser, setCurrentUser] = useState(undefined);
+
+  useEffect(() => {
+    const user = AuthService.getCurrentUser();
+
+    if (user) {
+      setCurrentUser(user);
+      setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
+      // console.log('setShowAdminBoard', showAdminBoard);
+
+    }
+
+  }, [showAdminBoard]);
+
   return (
     <Router>
       <div className="App">
         <nav className="navbar navbar-expand-lg navbar-light fixed-top">
           <div className="container">
-            <Link className="navbar-brand" to={'/sign-in'}>
-              <img alt="logo" width={130} height={50} src={myImage}></img>
+            <Link className="navbar-brand" to={'/'}>
+              <img alt="logo" width={165} height={60} src={myImage}></img>
             </Link>
             <div>
               <ul className="navbar-nav ml-auto">
@@ -56,6 +55,7 @@ function App() {
               <Route exact path="/" element={<Login />} />
               <Route path="/sign-in" element={<Login />} />
               <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/home" element={<Home />} />
             </Routes>
           </div>
         </div>

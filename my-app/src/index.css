@@ -2,6 +2,8 @@
 * {
   box-sizing: border-box;
 }
+@import '~antd/dist/antd.css';
+
 body {
   background: #1C8EF9 !important;
   min-height: 100vh;
@@ -71,4 +73,7 @@ body, html, .App, #root, .auth-wrapper {
   border: 1px solid #ced4da;
   padding: 0.375rem 0.75rem;
   border-radius: 0.25rem;
+}
+.error-message {
+  margin-bottom: 15px;
 }
