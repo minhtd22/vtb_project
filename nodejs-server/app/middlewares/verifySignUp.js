@@ -14,7 +14,7 @@ const checkDuplicateUsernameOrEmail = (req, res, next) => {
       return;
     }
     if (user) {
-      res.status(400).send({ message: 'Failed! Username is already in use!' });
+      res.status(400).send({ message: 'Tài khoản đã được đăng ký!' });
       return;
     }
 
@@ -28,15 +28,34 @@ const checkDuplicateUsernameOrEmail = (req, res, next) => {
           return;
         }
         if (user) {
-          res.status(400).send({ message: 'Failed! Email is already in use!' });
+          res.status(400).send({ message: 'Email đã được đăng ký!' });
           return;
         }
         next();
       });
-    } else {
-      next();
     }
   });
+};
+
+const checkDuplicateUserCode = (req, res, next) => {
+  // UserCode
+  if (req.body.userCode) {
+    User.findOne({
+      userCode: req.body.userCode,
+    }).exec((err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      if (user) {
+        res.status(400).send({ message: 'Mã cán bộ đã được đăng ký!' });
+        return;
+      }
+      next();
+    });
+  } else {
+    next();
+  }
 };
 
 const checkRolesExisted = (req, res, next) => {
@@ -56,6 +75,7 @@ const checkRolesExisted = (req, res, next) => {
 
 const verifySignUp = {
   checkDuplicateUsernameOrEmail,
+  checkDuplicateUserCode,
   checkRolesExisted,
 };
 

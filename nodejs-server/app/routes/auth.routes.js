@@ -13,6 +13,7 @@ module.exports = (app) => {
     '/api/auth/signup',
     [
       verifySignUp.checkDuplicateUsernameOrEmail,
+      verifySignUp.checkDuplicateUserCode,
       verifySignUp.checkRolesExisted,
     ],
     controller.signup,

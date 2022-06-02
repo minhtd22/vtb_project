@@ -25,8 +25,9 @@ module.exports = (mongoose, mongoosePaginate) => {
         required: true,
         minLength: 8,
       },
-      code: {
+      userCode: {
         type: String,
+        unique: true,
       },
       department: {
         type: String,

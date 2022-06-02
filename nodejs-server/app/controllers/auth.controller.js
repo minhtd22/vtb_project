@@ -11,11 +11,12 @@ const User = db.user;
 const Role = db.role;
 
 exports.signup = (req, res) => {
+  console.log('req', req.body);
   const user = new User({
     username: req.body.username,
     fullName: req.body.fullName,
     email: req.body.email,
-    code: req.body.code,
+    userCode: req.body.userCode,
     department: req.body.department,
     password: bcrypt.hashSync(req.body.password, 8),
   });
