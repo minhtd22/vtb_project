@@ -28,15 +28,20 @@ body, html, .App, #root, .auth-wrapper {
 }
 .nav-item-login {
   margin-right: 20px;
+  font-weight: 600;
 }
+.nav-link:hover {
+  color: #1C8EF9 !important;
+}
+
 .auth-wrapper {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   flex-direction: column;
   text-align: left;
 }
 .auth-inner {
-  width: 450px;
+  /* width: 450px; */
   margin: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
@@ -76,4 +81,11 @@ body, html, .App, #root, .auth-wrapper {
 }
 .error-message {
   margin-bottom: 15px;
+}
+
+.search-user {
+  width: 300px;
+  display: flex;
+  margin: auto;
+  margin-bottom: 30px;
 }
