@@ -3,7 +3,7 @@ const db = require('../models');
 const getUserInfor = require('../helpers/getUserInfo');
 
 const Product = db.product;
-const getPagination = (page, size = 5) => {
+const getPagination = (page, size) => {
   const limit = size ? +size : 5;
   const offset = page ? page * limit : 0;
   return { limit, offset };
@@ -52,18 +52,25 @@ exports.create = (req, res) => {
     });
 };
 // Retrieve all Products from the database.
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   const getCurrentUser = getUserInfor(req, res);
-  const userId = getCurrentUser.id;
+  const currentUserId = getCurrentUser.id;
   const userRoles = getCurrentUser.roles;
   const isUserAdmin = validateAdminRole(userRoles);
   const {
-    page, size, cif, customerName,
+    page, size, cif, customerName, userId,
   } = req.query;
   const { limit, offset } = getPagination(page, size);
   let query = {};
 
   if (!isUserAdmin) {
+    query = {
+      ...query,
+      user: currentUserId,
+    };
+  }
+
+  if (isUserAdmin && userId) {
     query = {
       ...query,
       user: userId,
@@ -84,11 +91,24 @@ exports.findAll = (req, res) => {
     };
   }
 
-  Product.paginate(query, { offset, limit })
+  Product.paginate(
+    query,
+    {
+      offset,
+      limit,
+      populate: {
+        path: 'user',
+        select: 'fullName userCode department',
+      },
+      sort: {
+        createdAt: -1,
+      },
+    },
+  )
     .then((data) => {
       res.send({
         totalItems: data.totalDocs,
-        products: data.docs,
+        data: data.docs,
         totalPages: data.totalPages,
         currentPage: data.page - 1,
       });
@@ -153,7 +173,7 @@ exports.delete = async (req, res) => {
   });
 
   // Validate if product does not belongs to user
-  if (product.user.toString() !== userId) {
+  if (product.user && product.user.toString() !== userId) {
     res.status(403).send({
       message: 'Access Denied',
     });

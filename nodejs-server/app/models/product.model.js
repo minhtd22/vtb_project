@@ -1,40 +1,40 @@
 const customerType = ['KHDN', 'KHCN'];
-const productName = [
-  'Cho vay vốn SXKD',
-  'Cho vay vốn đầu tư dự án',
-  'Giao dịch MBNT',
-  'DV chuyển tiền ngoại tệ đến/đi',
-  'POS',
-  'QR',
-  'Chi lương',
-  'Tiền gửi có kỳ hạn',
-  'Tài khoản thanh toán',
-  'Trái phiếu NHCT phát hành',
-  'Tài khoản ký quỹ',
-  'Thấu chi',
-  'TTTM & Bảo lãnh',
-  'Efast',
-  'Bảo hiểm phi nhân thọ',
-  'Bảo hiểm nhân thọ',
-  'Cho vay tiêu dùng',
-  'Ipay',
-  'Thẻ GNQT',
-  'Thẻ TDQT',
-  'TK số đẹp/Alias',
-];
+// const productName = [
+//   'Cho vay vốn SXKD',
+//   'Cho vay vốn đầu tư dự án',
+//   'Giao dịch MBNT',
+//   'DV chuyển tiền ngoại tệ đến/đi',
+//   'POS',
+//   'QR',
+//   'Chi lương',
+//   'Tiền gửi có kỳ hạn',
+//   'Tài khoản thanh toán',
+//   'Trái phiếu NHCT phát hành',
+//   'Tài khoản ký quỹ',
+//   'Thấu chi',
+//   'TTTM & Bảo lãnh',
+//   'Efast',
+//   'Bảo hiểm phi nhân thọ',
+//   'Bảo hiểm nhân thọ',
+//   'Cho vay tiêu dùng',
+//   'Ipay',
+//   'Thẻ GNQT',
+//   'Thẻ TDQT',
+//   'TK số đẹp/Alias',
+// ];
 
 module.exports = (mongoose, mongoosePaginate) => {
   const productSchema = new mongoose.Schema(
     {
       productName: {
         type: String,
-        enum: productName,
+        // enum: productName,
         required: true,
       },
       customerType: {
         type: String,
         enum: customerType,
-        required: false,
+        required: true,
       },
       customerInformation: {
         type: String,

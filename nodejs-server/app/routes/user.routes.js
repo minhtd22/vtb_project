@@ -13,6 +13,7 @@ module.exports = (app) => {
   app.get('/api/users', [authJwt.verifyToken], controller.findAll);
   app.get('/api/users/:id', [authJwt.verifyToken], controller.findOne);
   app.put('/api/users/:id', [authJwt.verifyToken], controller.update);
+  app.delete('/api/users/:id', [authJwt.verifyToken], controller.delete);
 
   app.get('/api/test/all', controller.allAccess);
   app.get('/api/test/user', [authJwt.verifyToken], controller.userBoard);

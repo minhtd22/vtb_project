@@ -4,8 +4,8 @@ const getUserInfor = require('../helpers/getUserInfo');
 
 const User = db.user;
 
-const getPagination = (page, size = 5) => {
-  const limit = size ? +size : 5;
+const getPagination = (page, size) => {
+  const limit = size ? +size : 1000;
   const offset = page ? page * limit : 0;
   return { limit, offset };
 };
@@ -29,7 +29,7 @@ exports.findAll = (req, res) => {
       };
     }
 
-    User.paginate(query, { offset, limit })
+    User.paginate(query, { offset, limit, sort: { username: 1 } })
       .then((data) => {
         res.send({
           totalItems: data.totalDocs,
@@ -97,6 +97,36 @@ exports.update = (req, res) => {
           message: err.message,
         });
       });
+  }
+};
+
+// Delete User with the specified id in the request
+exports.delete = async (req, res) => {
+  const { id } = req.params;
+  const getCurrentUser = getUserInfor(req, res);
+  const userRoles = getCurrentUser.roles;
+  const isUserAdmin = validateAdminRole(userRoles);
+
+  if (isUserAdmin) {
+    User.findByIdAndRemove(id)
+      .then((data) => {
+        if (!data) {
+          res.status(404).send({
+            message: `Cannot delete User with id=${id}. Maybe Product was not found!`,
+          });
+        } else {
+          res.send({
+            message: 'User was deleted successfully!',
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err.message,
+        });
+      });
+  } else {
+    res.status(403).send({ status: 403, message: 'Access Denied' });
   }
 };
 
