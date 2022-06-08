@@ -1,4 +1,4 @@
-const department = ['DVKH', 'Bán lẻ', 'KHDN', 'PGD Ông Ích Khiêm', 'PGD Tây Hồ', 'PGD Nam ĐN'];
+const department = ['DVKH', 'Bán lẻ', 'KHDN', 'PGD Ông Ích Khiêm', 'PGD Tây Hồ', 'PGD Nam ĐN', 'Phòng HTTD', 'Phòng Tổng hợp', 'Phòng TCHC'];
 
 module.exports = (mongoose, mongoosePaginate) => {
   const userSchema = new mongoose.Schema(

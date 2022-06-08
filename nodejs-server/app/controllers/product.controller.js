@@ -4,7 +4,7 @@ const getUserInfor = require('../helpers/getUserInfo');
 
 const Product = db.product;
 const getPagination = (page, size) => {
-  const limit = size ? +size : 5;
+  const limit = size ? +size : 10000;
   const offset = page ? page * limit : 0;
   return { limit, offset };
 };
@@ -27,6 +27,7 @@ exports.create = (req, res) => {
     customerName: req.body.customerName,
     dayAction: req.body.dayAction,
     cif: req.body.cif,
+    note: req.body.note,
     user: getCurrentUser.id,
   });
 
