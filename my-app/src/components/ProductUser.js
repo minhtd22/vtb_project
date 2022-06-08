@@ -7,9 +7,7 @@ import ProductService from '../services/product.service';
 const ProductUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState([]);
-
   const { id } = useParams();
-  console.log(id);
 
   useEffect(() => {
     setIsLoading(true);
@@ -17,7 +15,6 @@ const ProductUser = () => {
     ProductService.getAllProducts(10000, 0, id).then(
       (response) => {
         setProducts(response.data);
-        console.log('response.data', response.data);
         setIsLoading(false);
       },
       (error) => {
@@ -35,7 +32,6 @@ const ProductUser = () => {
     ProductService.getAllProducts(undefined, undefined, undefined, value)
       .then(response => {
         setProducts(response.data);
-        console.log('response.data search', response.data);
       })
   };
 
@@ -43,7 +39,7 @@ const ProductUser = () => {
     <div>
       <div className='search-user'>
         <Input.Search
-          placeholder="Nhập tìm kiếm tên khách hàng"
+          placeholder="Nhập tìm kiếm khách hàng"
           onSearch={onSearchCustomerName}
           enterButton
         />

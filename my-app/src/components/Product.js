@@ -211,7 +211,7 @@ const Product = ({ getCurrentUser }) => {
     <div>
       <div className='search-user'>
         <Input.Search
-          placeholder="Nhập tìm kiếm tên khách hàng"
+          placeholder="Nhập tìm kiếm khách hàng"
           onSearch={onSearchCustomerName}
           enterButton
         />

@@ -74,7 +74,6 @@ const SignUp = () => {
             setIsOpen(true);
           }, 
           (error) => {
-            console.log('error', error);
             const resMessage =
               (error.response &&
                 error.response.data &&

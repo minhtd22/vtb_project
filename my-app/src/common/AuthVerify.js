@@ -12,7 +12,6 @@ const AuthVerify = (props) => {
     const { exp } = jwt(token);
     
     if (exp * 1000 < Date.now()) {
-      console.log('here');
       navigate('/login'); 
       props.logOut();
     }

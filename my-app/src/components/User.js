@@ -46,7 +46,6 @@ const User = ({ getCurrentUser }) => {
     UserService.getAllUsers(value)
       .then(response => {
         setContent(response.data);
-        console.log('response.data', response.data);
       })
   };
   

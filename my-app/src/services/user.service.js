@@ -2,9 +2,6 @@ import axios from 'axios';
 import authHeader from './auth-header';
 
 const API_URL = 'http://localhost:8080/api/users/';
-const getPublicContent = () => {
-  return axios.get(API_URL + 'all');
-};
 
 const getAllUsers = (username) => {
   return axios.get(API_URL,
@@ -26,7 +23,6 @@ const getDetailUser = (id) => {
 };
 
 const updateUser = (id, data) => {
-  console.log('datadata', data);
   return axios.put(
     API_URL + `${id}`,
     data,
@@ -37,7 +33,6 @@ const updateUser = (id, data) => {
 }
 
 const UserService = {
-  getPublicContent,
   getAllUsers,
   getDetailUser,
   updateUser,
