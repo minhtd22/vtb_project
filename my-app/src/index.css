@@ -82,10 +82,13 @@ body, html, .App, #root, .auth-wrapper {
 .error-message {
   margin-bottom: 15px;
 }
-
 .search-user {
   width: 300px;
   display: flex;
   margin: auto;
   margin-bottom: 30px;
+}
+.register-button {
+  margin-bottom: 30px;
+  float: right; 
 }

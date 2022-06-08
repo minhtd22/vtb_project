@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import AuthService from '../services/auth.service';
 import UserService from '../services/user.service';
 
-const User = () => {
+const User = ({ getCurrentUser }) => {
   const [content, setContent] = useState('');
   const [currentUser, setCurrentUser] = useState(undefined);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -13,31 +13,37 @@ const User = () => {
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
+    const isAdmin = user?.roles.includes('ROLE_ADMIN');
+
     setIsLoading(true);
+    getCurrentUser(user);
 
     if (user) {
       setCurrentUser(user);
-      setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
+      setShowAdminBoard(isAdmin);
     }
-    
-    UserService.getAllUsers().then(
-      (response) => {
-        setContent(response.data);
-        setIsLoading(false);
-      },
-      (error) => {
-        const _content =
-          (error.response && error.response.data) ||
-          error.message ||
-          error.toString();
 
-        setContent(_content);
-      }
-    );
+    // if (isAdmin) {
+      UserService.getAllUsers().then(
+        (response) => {
+          setContent(response.data);
+          setIsLoading(false);
+        },
+        (error) => {
+          const _content =
+            (error.response && error.response.data) ||
+            error.message ||
+            error.toString();
+  
+          setContent(_content);
+        }
+      );
+    // }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSearchUserName = value => {
-    UserService.searchUsersByName(value)
+    UserService.getAllUsers(value)
       .then(response => {
         setContent(response.data);
         console.log('response.data', response.data);

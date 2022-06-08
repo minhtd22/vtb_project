@@ -17,9 +17,19 @@ const getAllProducts = (limit, offset, userId, customerName) => {
     });
 };
 
+const creatProduct = (data) => {
+  return axios.post(
+    API_URL,
+    data, 
+    {
+      headers: authHeader(),
+    },
+  );
+};
 
 const ProductService = {
   getAllProducts,
+  creatProduct,
 };
 
 export default ProductService;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 
 import Login from './components/Login';
 import SignUp from './components/SignUp';
@@ -13,31 +12,44 @@ import Profile from './components/Profile';
 import Product from './components/Product';
 import ProductUser from './components/ProductUser';
 import AuthVerify from './common/AuthVerify';
+import { PrivateRoute } from './components/PrivateRoute';
+import Unauthorized from './components/Unauthorized';
 
 function App() {
-  const [showAdminBoard, setShowAdminBoard] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
-  const history = createBrowserHistory()
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const user = AuthService.getCurrentUser();
     
     if (user) {
-      setCurrentUser(user);
-      setShowAdminBoard(user.roles.includes('ROLE_ADMIN'));
+      setUserRole(user);
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
 
-  }, [showAdminBoard]);
-  
+  }, [isAdmin, isLoggedIn]);
+
+  const getCurrentUser = (data) => {
+    setUserRole(data);
+  };
+
+  const setUserRole = (data) => {
+    setCurrentUser(data);
+    setIsAdmin(data.roles.includes('ROLE_ADMIN'));
+  };
 
   const logOut = () => {
     AuthService.logout();
-    setShowAdminBoard(false);
+    setIsAdmin(false);
     setCurrentUser(undefined);
-  }
+    setIsLoggedIn(false);
+  };
 
   return (
-    <Router history={history}>
+    <Router>
       <div className="App">
         <nav className="navbar navbar-expand-lg navbar-light fixed-top">
           <div className="container">
@@ -48,25 +60,30 @@ function App() {
               <ul className="navbar-nav ml-auto">
                 {currentUser ?
                   <>
-                    {showAdminBoard && <div style={{ display: 'flex', left: '25%', position: 'absolute' }}>
-                      <li className="nav-item nav-item-login">
-                        <Link className="nav-link" to={'/users'} >
-                          Cán bộ
-                        </Link>
-                      </li>
-                      <li className="nav-item nav-item-login">
-                        <Link className="nav-link" to={'/products'} >
-                          Sản phẩm dịch vụ
-                        </Link>
-                      </li>
-                    </div>}
+                    {
+                      <div style={{ display: 'flex', left: '25%', position: 'absolute' }}>
+                        {
+                          isAdmin && 
+                          <li className="nav-item nav-item-login">
+                            <Link className="nav-link" to={'/users'} >
+                              Cán bộ
+                            </Link>
+                          </li>
+                        }
+                        <li className="nav-item nav-item-login">
+                          <Link className="nav-link" to={'/products'} >
+                            Sản phẩm dịch vụ
+                          </Link>
+                        </li>
+                      </div>
+                    }
                     <li className="nav-item nav-item-login">
                       <Link className="nav-link" to={'/profile'} >
                         {currentUser.username}
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to={'/sign-in'} onClick={logOut}>
+                      <Link className="nav-link" to={'/login'} onClick={logOut}>
                         Đăng xuất
                       </Link>
                     </li>
@@ -74,7 +91,7 @@ function App() {
                    :
                   <>
                     <li className="nav-item nav-item-login">
-                      <Link className="nav-link" to={'/sign-in'}>
+                      <Link className="nav-link" to={'/login'}>
                         Đăng nhập
                       </Link>
                     </li>
@@ -92,17 +109,19 @@ function App() {
         <div className="auth-wrapper">
           <div className="auth-inner">
             <Routes>
-              <Route exact path="/" element={currentUser ? <User /> : <Login />} />
-              <Route path="/sign-in" element={<Login />} />
-              <Route path="/sign-up" element={<SignUp />} />
-              <Route path="/users" element={<User />} />
-              <Route path="/products" element={<Product />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/products/:id" element={<ProductUser />} />
+              <Route exact path="/" element={isLoggedIn ? <Product getCurrentUser={getCurrentUser}/> : <Login />} />
+              <Route path="/login" element={isLoggedIn ? <Product getCurrentUser={getCurrentUser} /> : <Login />} />
+              <Route path="/sign-up" element={isLoggedIn ? <Product getCurrentUser={getCurrentUser} /> : <SignUp />} />
+              <Route exact path='/' element={<PrivateRoute/>}>
+                <Route path="/users" element={isAdmin ? <User getCurrentUser={getCurrentUser} /> : <Unauthorized /> } />
+                <Route path="/products" element={<Product getCurrentUser={getCurrentUser} />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/products/:id" element={<ProductUser />} />
+              </Route>
             </Routes>
           </div>
         </div>
-        {/* <AuthVerify logOut={logOut} /> */}
+        <AuthVerify logOut={logOut} />
       </div>
     </Router>
   )

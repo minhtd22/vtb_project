@@ -1,7 +1,6 @@
-import React from 'react';
-import { Modal, Button } from 'antd';
+import { Modal } from 'antd';
 
-const UserSignupModal = ({ isModalVisible, handleOk }) => {
+const UserSignupModal = ({ handleOk }) => {
   Modal.success({
     content: 'Chúc mừng bạn đã đăng ký tài khoản thành công. Xin vui lòng đăng nhập!',
     onOk: handleOk,

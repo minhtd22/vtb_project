@@ -51,7 +51,6 @@ const SignUp = () => {
   };
 
   return (
-  
     <div>
       <h3>Đăng ký</h3>
       <Form
@@ -165,9 +164,13 @@ const SignUp = () => {
           >
             <Option value="DVKH">DVKH</Option>
             <Option value="Bán lẻ">Bán lẻ</Option>
+            <Option value="KHDN">KHDN</Option>
             <Option value="PGD Ông Ích Khiêm">PGD Ông Ích Khiêm</Option>
             <Option value="PGD Tây Hồ">PGD Tây Hồ</Option>
             <Option value="PGD Nam Đà Nẵng">PGD Nam Đà Nẵng</Option>
+            <Option value="Phòng HTTD">Phòng HTTD</Option>
+            <Option value="Phòng Tổng hợp">Phòng Tổng hợp</Option>
+            <Option value="Phòng TCHC">Phòng TCHC</Option>
           </Select>
         </Form.Item>
 
@@ -218,35 +221,34 @@ const SignUp = () => {
         <Input.Password />
       </Form.Item>
 
-        <div className="error-message">
-          {message && (
-            <Alert
-              description={message}
-              type="error"
-              showIcon
-            />
-          )}
-        </div>
+      <div className="error-message">
+        {message && (
+          <Alert
+            description={message}
+            type="error"
+            showIcon
+          />
+        )}
+      </div>
 
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        >
-          <Button type="primary" htmlType="submit">
-            Đăng ký
-          </Button>
-        </Form.Item>
-      </Form>
+      <Form.Item
+        wrapperCol={{
+          offset: 8,
+          span: 16,
+        }}
+      >
+        <Button type="primary" htmlType="submit">
+          Đăng ký
+        </Button>
+      </Form.Item>
+    </Form>
 
-      {isOpen && <UserSignupModal handleOk={() => navigate("/sign-in")} />}
+    {isOpen && <UserSignupModal handleOk={() => navigate("/login")} />}
 
-      <p className="forgot-password text-right">
-        Đã có tài khoản <a href="/sign-in">Đăng nhập?</a>
-      </p>
-    </div>
-  );
-};
+    <p className="forgot-password text-right">
+      Đã có tài khoản <a href="/login">Đăng nhập?</a>
+    </p>
+  </div>
+)};
 
 export default SignUp;

@@ -43,8 +43,7 @@ const Login = () => {
         onFinish={(data) => {
           AuthService.login(username, password).then(
             () => {
-              navigate('/users');
-              window.location.reload();
+              navigate('/products');
             },
             (error) => {
               const resMessage =

@@ -1,6 +1,6 @@
 import { Input, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { columns } from '../constants/constants';
 import ProductService from '../services/product.service';
 
